@@ -1,12 +1,14 @@
 package com.project.inssurancemanagement.services;
 
-import com.project.inssurancemanagement.entities.HealthInsurance;
+
+import com.project.inssurancemanagement.entities.HealthInsuranceRequest;
+import com.project.inssurancemanagement.entities.InsurancePrediction;
 
 import java.util.Map;
 
 public interface PredictionService {
 
-    public Map<String, Object> preprocessData(HealthInsurance healthInsurance) ;
+    public Map<String, Object> preprocessData(HealthInsuranceRequest healthInsurance) ;
 
-    public double getPredictionAndUpdateResult(Long healthInsuranceId) ;
+    public InsurancePrediction getPredictionAndUpdateResult(Long healthInsuranceId) ;
 }
