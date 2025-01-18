@@ -1,6 +1,5 @@
 # Utiliser une image Java comme base
-FROM maven:3.8.6-openjdk-17 AS builder
-
+FROM maven:3.9.6-eclipse-temurin-21 AS builder_service
 # Définir le répertoire de travail
 WORKDIR /app
 
