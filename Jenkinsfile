@@ -34,7 +34,7 @@ pipeline {
                 }
             }
         }*/
-         sstage('Build Docker Image') {
+         stage('Build Docker Image') {
                                steps {
                                    script {
                                        def localImageName = "${IMAGE_NAME}:${BUILD_NUMBER}"
