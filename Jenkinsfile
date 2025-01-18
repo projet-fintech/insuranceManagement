@@ -106,7 +106,7 @@ pipeline {
             }
         }*/
 
-        // Étape 7 : Nettoyage 
+        // Étape 7 : Nettoyage
         stage('Cleanup') {
             steps {
                 script {
