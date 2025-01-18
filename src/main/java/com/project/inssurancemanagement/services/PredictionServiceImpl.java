@@ -79,10 +79,10 @@ public class PredictionServiceImpl implements PredictionService {
     public Map<String, Object> preprocessData(HealthInsuranceRequest request) {
         Map<String, Object> requestData = new HashMap<>();
         requestData.put("age", request.getAge());
-        requestData.put("sex", request.getSex());
+        requestData.put("sex", request.getSex() == 1 ? "M" : "F"); // Convertir 1 en "M" et 0 en "F"
         requestData.put("bmi", request.getBmi());
         requestData.put("children", request.getChildren());
-        requestData.put("smoker", request.getSmoker());
+        requestData.put("smoker", request.getSmoker() == 1 ? "yes" : "no"); // Convertir 1 en "yes" et 0 en "no"
         requestData.put("userId", request.getUserId());
         return requestData;
     }

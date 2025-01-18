@@ -17,6 +17,9 @@ class NotificationServiceTest {
         NotificationService notificationService = new NotificationService();
         notificationService.restTemplate = restTemplateMock;
 
+        // Définir une URL de test
+        notificationService.notificationServiceUrl = "http://test-url.com";
+
         long userId = 123L;
         String subject = "Insurance Notification";
         double predictedCost = 5000.0;
@@ -32,6 +35,6 @@ class NotificationServiceTest {
 
         notificationService.sendInsuranceEmail(userId, subject, predictedCost, category, monthlyPayment);
 
-        verify(restTemplateMock, times(1)).postForObject(anyString(), eq(expectedRequestData), eq(String.class));
+        verify(restTemplateMock, times(1)).postForObject(eq("http://test-url.com"), eq(expectedRequestData), eq(String.class));
     }
 }

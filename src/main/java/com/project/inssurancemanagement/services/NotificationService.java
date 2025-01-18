@@ -13,7 +13,7 @@ import java.util.Map;
 public class NotificationService {
 
     @Value("${notification.api.url}")
-    private String notificationServiceUrl;
+    public String notificationServiceUrl;
     @Autowired
     public RestTemplate restTemplate;
 
