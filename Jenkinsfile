@@ -37,22 +37,22 @@ pipeline {
                 }
             }
         }*/
-stage('SonarQube Analysis') {
-    steps {
-        script {
-           withSonarQubeEnv('sonarqube') {
-          sh """
-               mvn sonar:sonar \
-                    -Dsonar.projectKey=${COMPONENT_NAME}-project \
-                    -Dsonar.sources=. \
-                     -Dsonar.exclusions=**/src/test/**/*   # exclure tous les fichiers test
-                    -Dsonar.host.url=${SONAR_HOST} 
-                    -Dsonar.login=${SONAR_TOKEN}
-               """
+         stage('SonarQube Analysis') {
+            steps {
+                script {
+                   withSonarQubeEnv('sonarqube') {
+                  sh """
+                       mvn sonar:sonar \
+                            -Dsonar.projectKey=${COMPONENT_NAME}-project \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=${SONAR_HOST}
+                            -Dsonar.exclusions=**/src/test/**/* // change this if needed to your production URL
+                            -Dsonar.login=${SONAR_TOKEN} // Replace by your token
+                       """
+                    }
+                }
             }
         }
-    }
-}
           /*stage('Build Docker Image') {
                      steps {
                          script {
