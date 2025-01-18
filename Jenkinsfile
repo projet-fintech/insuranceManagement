@@ -8,43 +8,35 @@ pipeline {
     environment {
         AWS_REGION = 'eu-west-3'
         ECR_REGISTRY = '329599629502.dkr.ecr.eu-west-3.amazonaws.com'
-        IMAGE_NAME = "innsurance-management"
-        COMPONENT_NAME = "Inssurance-Management"
-        SONAR_TOKEN = "39cc334a0a13dc54d616ab48a6949fae534f6b15"
-        SONAR_HOST = "http://192.168.0.147:9000"
+        IMAGE_NAME = 'insurance-management'
+        COMPONENT_NAME = 'Insurance-Management'
+        SONAR_TOKEN = '39cc334a0a13dc54d616ab48a6949fae534f6b15'
+        SONAR_HOST = 'http://192.168.0.147:9000'
     }
     stages {
         // Étape 1 : Checkout du code
         stage('Checkout') {
             steps {
-                checkout scmGit(
+                checkout([$class: 'GitSCM',
                     branches: [[name: '*/main']],
                     extensions: [],
                     userRemoteConfigs: [[credentialsId: 'ser3elah', url: 'https://github.com/projet-fintech/insuranceManagement.git']]
-                )
+                ])
             }
         }
 
-        // Étape 2 : Build du projet
-        /*stage('Build') {
-            steps {
-                script {
-                    sh "mvn clean install -DskipTests"
-                }
-            }
-        }*/
-
-        // Étape 3 : Exécution des tests unitaires
+        // Étape 2 : Exécution des tests unitaires
         stage('Run Unit Tests') {
             steps {
                 script {
-                    sh "mvn test"
+                    sh 'mvn test'
                 }
             }
         }
 
-        // Étape 4 : Analyse SonarQube
-       /* stage('SonarQube Analysis') {
+        // Étape 3 : Analyse SonarQube (décommenter si nécessaire)
+        /*
+        stage('SonarQube Analysis') {
             steps {
                 script {
                     withSonarQubeEnv('sonarqube') {
@@ -61,20 +53,24 @@ pipeline {
                     }
                 }
             }
-        }*/
+        }
+        */
 
-        // Étape 5 : Build de l'image Docker (optionnel)
-        /*stage('Build Docker Image') {
+        // Étape 4 : Build de l'image Docker (optionnel)
+        /*
+        stage('Build Docker Image') {
             steps {
                 script {
                     def localImageName = "${IMAGE_NAME}:${BUILD_NUMBER}"
                     sh "docker build -t ${localImageName} ."
                 }
             }
-        }*/
+        }
+        */
 
-        // Étape 6 : Push de l'image Docker vers ECR
-       /* stage('Push to ECR') {
+        // Étape 5 : Push de l'image Docker vers ECR (optionnel)
+        /*
+        stage('Push to ECR') {
             steps {
                 script {
                     withCredentials([aws(credentialsId: 'aws-credentials')]) {
@@ -105,8 +101,10 @@ pipeline {
                 }
             }
         }
+        */
 
-      /*  // Étape 7 : Nettoyage
+        // Étape 6 : Nettoyage (optionnel)
+        /*
         stage('Cleanup') {
             steps {
                 script {
@@ -118,6 +116,7 @@ pipeline {
                 }
             }
         }
+        */
     }
     post {
         // Actions post-build
@@ -131,5 +130,5 @@ pipeline {
         always {
             cleanWs()
         }
-    }*/
+    }
 }
