@@ -34,14 +34,14 @@ pipeline {
                 }
             }
         }*/
-         stage('Build Docker Image') {
-                               steps {
-                                   script {
-                                       def localImageName = "${IMAGE_NAME}:${BUILD_NUMBER}"
-                                        sh "docker build  --platform=linux/amd64 --add-host=registry-1.docker.io:8.8.8.8 -t ${localImageName} ."
-                                   }
-                               }
-                           }
+          stage('Build Docker Image') {
+                     steps {
+                         script {
+                             def localImageName = "${IMAGE_NAME}:${BUILD_NUMBER}"
+                             sh "docker build -t ${localImageName} ."
+                         }
+                     }
+                 }
          stage('Push to ECR') {
             steps {
                 script {
