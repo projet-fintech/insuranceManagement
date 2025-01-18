@@ -9,6 +9,8 @@ pipeline {
         AWS_REGION = 'eu-west-3'
         ECR_REGISTRY = '329599629502.dkr.ecr.eu-west-3.amazonaws.com'
         IMAGE_NAME = "innsurance-management"  // Utilisez une variable pour le nom de l'image
+        COMPONENT_NAME = "Inssurance-Management"
+        SONAR_TOKEN="39cc334a0a13dc54d616ab48a6949fae534f6b15"
     }
     stages {
         stage('Checkout') {
@@ -20,13 +22,13 @@ pipeline {
                         )
                     }
                 }
-        stage('Build') {
+        /*stage('Build') {
             steps {
               script {
                    sh "mvn clean install -DskipTests"
               }
             }
-        }
+        }*/
           /*stage('Run Unit Tests') {
            steps {
                 script {
@@ -34,7 +36,22 @@ pipeline {
                 }
             }
         }*/
-          stage('Build Docker Image') {
+         stage('SonarQube Analysis') {
+            steps {
+                script {
+                   withSonarQubeEnv('sonarqube') {
+                  sh """
+                       mvn sonar:sonar \
+                            -Dsonar.projectKey=${COMPONENT_NAME}-project \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=http://localhost:9000 \  // change this if needed to your production URL
+                            -Dsonar.login=${SONAR_TOKEN} // Replace by your token
+                       """
+                    }
+                }
+            }
+        }
+          /*stage('Build Docker Image') {
                      steps {
                          script {
                              def localImageName = "${IMAGE_NAME}:${BUILD_NUMBER}"
@@ -96,6 +113,6 @@ pipeline {
         }
         always {
             cleanWs()
-        }
+        }*/
     }
 }
