@@ -9,7 +9,7 @@ pipeline {
         AWS_REGION = 'eu-west-3'
         ECR_REGISTRY = '329599629502.dkr.ecr.eu-west-3.amazonaws.com'
         IMAGE_NAME = 'insurance-management'
-        COMPONENT_NAME = 'Insurance-Management'
+        COMPONENT_NAME = 'Inssurance-Management'
         SONAR_TOKEN = '39cc334a0a13dc54d616ab48a6949fae534f6b15'
         SONAR_HOST = 'http://192.168.0.147:9000'
     }
@@ -54,7 +54,7 @@ pipeline {
                 }
             }
         }
-        
+
 
         // Étape 4 : Build de l'image Docker (optionnel)
         /*
