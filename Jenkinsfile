@@ -35,7 +35,7 @@ pipeline {
         }
 
         // Étape 3 : Analyse SonarQube (décommenter si nécessaire)
-        /*
+
         stage('SonarQube Analysis') {
             steps {
                 script {
@@ -54,7 +54,7 @@ pipeline {
                 }
             }
         }
-        */
+        
 
         // Étape 4 : Build de l'image Docker (optionnel)
         /*
