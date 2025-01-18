@@ -45,8 +45,8 @@ stage('SonarQube Analysis') {
                mvn sonar:sonar \
                     -Dsonar.projectKey=${COMPONENT_NAME}-project \
                     -Dsonar.sources=. \
-                     -Dsonar.exclusions=**/src/test/**/* \  # exclure tous les fichiers test
-                    -Dsonar.host.url=${SONAR_HOST} \ 
+                     -Dsonar.exclusions=**/src/test/**/*   # exclure tous les fichiers test
+                    -Dsonar.host.url=${SONAR_HOST} 
                     -Dsonar.login=${SONAR_TOKEN}
                """
             }
