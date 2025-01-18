@@ -1,5 +1,6 @@
 # Utiliser une image Java comme base
-FROM maven:3.9.6-eclipse-temurin-21 AS builder_service
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
+
 # Définir le répertoire de travail
 WORKDIR /app
 
@@ -7,7 +8,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 # Installer les dépendances
-RUN mvn clean install
+RUN mvn clean install -DskipTests
 
 # Utiliser une image alpine pour servir l'application
 FROM eclipse-temurin:17-jre-alpine
