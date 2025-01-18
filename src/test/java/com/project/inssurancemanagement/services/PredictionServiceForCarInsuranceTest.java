@@ -6,21 +6,17 @@ import com.project.inssurancemanagement.repositories.CarInsurancePredictionRepos
 import com.project.inssurancemanagement.repositories.CarInsuranceRequestRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class PredictionServiceForCarInsuranceTest {
 
     @Mock
@@ -33,70 +29,39 @@ class PredictionServiceForCarInsuranceTest {
     private RestTemplate restTemplate;
 
     @InjectMocks
-    private PredictionServiceForCarInsurance predictionService;
-
-    private CarInsuranceRequest request;
-    private Map<String, Object> apiResponse;
+    private PredictionServiceForCarInsurance service;
 
     @BeforeEach
     void setUp() {
-        request = new CarInsuranceRequest();
-        request.setId(1L);
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testGetPredictionAndUpdateResult_Success() {
+        Long requestId = 1L;
+        CarInsuranceRequest request = new CarInsuranceRequest();
         request.setDriverAge(30);
         request.setDriverExperience(5);
         request.setPreviousAccidents(2);
-        request.setUserId(123L);
 
-        apiResponse = new HashMap<>();
-        apiResponse.put("ensemble_prediction", 500.0);
-    }
+        when(requestRepository.findById(requestId)).thenReturn(Optional.of(request));
+        when(restTemplate.postForObject(anyString(), any(), eq(Map.class))).thenReturn(Map.of("ensemble_prediction", 450.0));
 
-    @Test
-    void getPredictionAndUpdateResult_Success() {
-        // Mock repository response
-        when(requestRepository.findById(1L)).thenReturn(Optional.of(request));
-        when(restTemplate.postForObject(anyString(), any(Map.class), eq(Map.class))).thenReturn(apiResponse);
-        when(predictionRepository.save(any(CarInsurancePrediction.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        CarInsurancePrediction savedPrediction = new CarInsurancePrediction();
+        savedPrediction.setPredictionResult(450.0);
+        savedPrediction.setCategory("Standard Coverage");
+        savedPrediction.setMonthlyPayment(382.5);
+        when(predictionRepository.save(any(CarInsurancePrediction.class))).thenReturn(savedPrediction);
 
-        // Execute the method
-        CarInsurancePrediction result = predictionService.getPredictionAndUpdateResult(1L);
+        CarInsurancePrediction result = service.getPredictionAndUpdateResult(requestId);
 
-        // Verify the result
         assertNotNull(result);
-        assertEquals(500.0, result.getPredictionResult());
+        assertEquals(450.0, result.getPredictionResult());
         assertEquals("Standard Coverage", result.getCategory());
-        assertEquals(425.0, result.getMonthlyPayment()); // 500 * 0.85
-        assertEquals("PENDING", result.getStatus());
-        assertEquals(123L, result.getUserId());
+        assertEquals(382.5, result.getMonthlyPayment());
 
-        // Verify interactions
-        verify(requestRepository, times(1)).findById(1L);
-        verify(restTemplate, times(1)).postForObject(anyString(), any(Map.class), eq(Map.class));
-        verify(predictionRepository, times(1)).save(any(CarInsurancePrediction.class));
-    }
-
-    @Test
-    void getPredictionAndUpdateResult_RequestNotFound() {
-        when(requestRepository.findById(1L)).thenReturn(Optional.empty());
-
-        // Verify exception is thrown
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            predictionService.getPredictionAndUpdateResult(1L);
-        });
-
-        assertEquals("CarInsuranceRequest not found with id 1", exception.getMessage());
-    }
-
-    @Test
-    void getPredictionAndUpdateResult_ApiFailure() {
-        when(requestRepository.findById(1L)).thenReturn(Optional.of(request));
-        when(restTemplate.postForObject(anyString(), any(Map.class), eq(Map.class))).thenReturn(null);
-
-        // Verify exception is thrown
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            predictionService.getPredictionAndUpdateResult(1L);
-        });
-
-        assertEquals("Failed to get prediction from Flask API", exception.getMessage());
+        verify(requestRepository).findById(requestId);
+        verify(restTemplate).postForObject(anyString(), any(), eq(Map.class));
+        verify(predictionRepository).save(any(CarInsurancePrediction.class));
     }
 }

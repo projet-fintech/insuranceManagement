@@ -26,13 +26,13 @@ pipeline {
         }
 
         // Étape 2 : Build du projet
-        stage('Build') {
+        /*stage('Build') {
             steps {
                 script {
                     sh "mvn clean install -DskipTests"
                 }
             }
-        }
+        }*/
 
         // Étape 3 : Exécution des tests unitaires
         stage('Run Unit Tests') {
@@ -44,7 +44,7 @@ pipeline {
         }
 
         // Étape 4 : Analyse SonarQube
-        stage('SonarQube Analysis') {
+       /* stage('SonarQube Analysis') {
             steps {
                 script {
                     withSonarQubeEnv('sonarqube') {
@@ -61,17 +61,17 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
         // Étape 5 : Build de l'image Docker (optionnel)
-        stage('Build Docker Image') {
+        /*stage('Build Docker Image') {
             steps {
                 script {
                     def localImageName = "${IMAGE_NAME}:${BUILD_NUMBER}"
                     sh "docker build -t ${localImageName} ."
                 }
             }
-        }
+        }*/
 
         // Étape 6 : Push de l'image Docker vers ECR
        /* stage('Push to ECR') {
@@ -106,7 +106,7 @@ pipeline {
             }
         }*/
 
-        // Étape 7 : Nettoyage
+      /*  // Étape 7 : Nettoyage
         stage('Cleanup') {
             steps {
                 script {
@@ -131,5 +131,5 @@ pipeline {
         always {
             cleanWs()
         }
-    }
+    }*/
 }

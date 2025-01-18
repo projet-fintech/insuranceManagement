@@ -1,17 +1,17 @@
 package com.project.inssurancemanagement.services;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class NotificationServiceTest {
 
     @Mock
@@ -20,15 +20,30 @@ class NotificationServiceTest {
     @InjectMocks
     private NotificationService notificationService;
 
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
     @Test
-    void sendInsuranceEmail_Success() {
-        // Mock API call
-        doNothing().when(restTemplate).postForObject(anyString(), any(Map.class), eq(String.class));
+    void testSendInsuranceEmail() {
+        long userId = 1L;
+        String subject = "Insurance Prediction";
+        double predictedCost = 10000.0;
+        String category = "Soins réguliers pour des conditions modérées";
+        double monthlyPayment = 900.0;
 
-        // Execute the method
-        notificationService.sendInsuranceEmail(123L, "Test Subject", 1000.0, "Test Category", 100.0);
+        doNothing().when(restTemplate).postForObject(anyString(), any(), eq(String.class));
 
-        // Verify interaction
-        verify(restTemplate, times(1)).postForObject(anyString(), any(Map.class), eq(String.class));
+        notificationService.sendInsuranceEmail(userId, subject, predictedCost, category, monthlyPayment);
+
+        Map<String, Object> expectedRequest = new HashMap<>();
+        expectedRequest.put("userId", userId);
+        expectedRequest.put("subject", subject);
+        expectedRequest.put("predictedCost", predictedCost);
+        expectedRequest.put("category", category);
+        expectedRequest.put("monthlyPayment", monthlyPayment);
+
+        verify(restTemplate).postForObject(anyString(), eq(expectedRequest), eq(String.class));
     }
 }
