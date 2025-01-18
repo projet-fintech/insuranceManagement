@@ -8,65 +8,76 @@ pipeline {
     environment {
         AWS_REGION = 'eu-west-3'
         ECR_REGISTRY = '329599629502.dkr.ecr.eu-west-3.amazonaws.com'
-        IMAGE_NAME = "innsurance-management"  // Utilisez une variable pour le nom de l'image
+        IMAGE_NAME = "innsurance-management"
         COMPONENT_NAME = "Inssurance-Management"
-        SONAR_TOKEN="39cc334a0a13dc54d616ab48a6949fae534f6b15"
-        SONAR_HOST="http://192.168.0.147:9000"
+        SONAR_TOKEN = "39cc334a0a13dc54d616ab48a6949fae534f6b15"
+        SONAR_HOST = "http://192.168.0.147:9000"
     }
     stages {
+        // Étape 1 : Checkout du code
         stage('Checkout') {
-                    steps {
-                        checkout scmGit(
-                            branches: [[name: '*/main']],
-                            extensions: [],
-                            userRemoteConfigs: [[credentialsId: 'ser3elah', url: 'https://github.com/projet-fintech/insuranceManagement.git']]
-                        )
-                    }
-                }
-        stage('Build') {
             steps {
-              script {
-                   sh "mvn clean install -DskipTests"
-              }
+                checkout scmGit(
+                    branches: [[name: '*/main']],
+                    extensions: [],
+                    userRemoteConfigs: [[credentialsId: 'ser3elah', url: 'https://github.com/projet-fintech/insuranceManagement.git']]
+                )
             }
         }
-          /*stage('Run Unit Tests') {
-           steps {
+
+        // Étape 2 : Build du projet
+        stage('Build') {
+            steps {
                 script {
-                      sh "mvn test"
+                    sh "mvn clean install -DskipTests"
                 }
             }
-        }*/
+        }
 
+        // Étape 3 : Exécution des tests unitaires
+        stage('Run Unit Tests') {
+            steps {
+                script {
+                    sh "mvn test"
+                }
+            }
+        }
+
+        // Étape 4 : Analyse SonarQube
         stage('SonarQube Analysis') {
-                    steps {
-                        script {
-                            withSonarQubeEnv('sonarqube') {
-                                sh """
-                                mvn sonar:sonar -X \
-                                    -Dsonar.projectKey=${COMPONENT_NAME}-project \
-                                    -Dsonar.sources=src/main/java \
-                                    -Dsonar.tests=src/test/java \
-                                    -Dsonar.host.url=${SONAR_HOST} \
-                                    -Dsonar.login=${SONAR_TOKEN}
-                                """
-                            }
-                        }
+            steps {
+                script {
+                    withSonarQubeEnv('sonarqube') {
+                        sh """
+                        mvn sonar:sonar -X \
+                            -Dsonar.projectKey=${COMPONENT_NAME}-project \
+                            -Dsonar.sources=src/main/java \
+                            -Dsonar.tests=src/test/java \
+                            -Dsonar.java.binaries=target/classes \
+                            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+                            -Dsonar.host.url=${SONAR_HOST} \
+                            -Dsonar.login=${SONAR_TOKEN}
+                        """
                     }
                 }
-          /*stage('Build Docker Image') {
-                     steps {
-                         script {
-                             def localImageName = "${IMAGE_NAME}:${BUILD_NUMBER}"
-                             sh "docker build -t ${localImageName} ."
-                         }
-                     }
-                 }
-         stage('Push to ECR') {
+            }
+        }
+
+        // Étape 5 : Build de l'image Docker (optionnel)
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    def localImageName = "${IMAGE_NAME}:${BUILD_NUMBER}"
+                    sh "docker build -t ${localImageName} ."
+                }
+            }
+        }
+
+        // Étape 6 : Push de l'image Docker vers ECR
+       /* stage('Push to ECR') {
             steps {
                 script {
                     withCredentials([aws(credentialsId: 'aws-credentials')]) {
-
                         def awsCredentials = "-e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} -e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"
 
                         docker.image('amazon/aws-cli').inside("--entrypoint='' ${awsCredentials}") {
@@ -93,7 +104,9 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
+
+        // Étape 7 : Nettoyage 
         stage('Cleanup') {
             steps {
                 script {
@@ -106,7 +119,8 @@ pipeline {
             }
         }
     }
-   post {
+    post {
+        // Actions post-build
         failure {
             echo 'Pipeline failed! Cleaning up...'
             sh 'rm -f ecr_password.txt || true'
@@ -116,6 +130,6 @@ pipeline {
         }
         always {
             cleanWs()
-        }*/
+        }
     }
 }
