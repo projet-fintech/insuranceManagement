@@ -104,7 +104,7 @@ pipeline {
                     }
                 }
             }
-        }*/
+        }
 
       /*  // Étape 7 : Nettoyage
         stage('Cleanup') {
