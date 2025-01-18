@@ -15,7 +15,7 @@ public class NotificationService {
     @Value("${notification.api.url}")
     private String notificationServiceUrl;
     @Autowired
-    private RestTemplate restTemplate;
+    public RestTemplate restTemplate;
 
     public void sendInsuranceEmail(long userId, String subject, double predictedCost, String category, double monthlyPayment) {
         Map<String, Object> requestData = new HashMap<>();

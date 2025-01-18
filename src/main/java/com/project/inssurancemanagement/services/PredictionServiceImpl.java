@@ -87,7 +87,7 @@ public class PredictionServiceImpl implements PredictionService {
         return requestData;
     }
 
-    private String classifyPrediction(double predictedCost) {
+    public String classifyPrediction(double predictedCost) {
         if (predictedCost <= 5000) {
             return "Soins de base et besoins ponctuels";
         } else if (predictedCost <= 15000) {
@@ -99,7 +99,7 @@ public class PredictionServiceImpl implements PredictionService {
         }
     }
 
-    private double calculateMonthlyPayment(double predictedCost, String category) {
+    public double calculateMonthlyPayment(double predictedCost, String category) {
         switch (category) {
             case "Soins de base et besoins ponctuels":
                 return 300.00; // 10% reduction

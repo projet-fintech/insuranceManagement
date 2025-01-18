@@ -81,7 +81,7 @@ public class PredictionServiceForCarInsurance {
         return requestData;
     }
 
-    private String classifyPrediction(double predictedCost) {
+    public String classifyPrediction(double predictedCost) {
         if (predictedCost <= 400) {
             return "Basic Coverage";
         } else if (predictedCost <= 550) {
@@ -91,7 +91,7 @@ public class PredictionServiceForCarInsurance {
         }
     }
 
-    private double calculateMonthlyPayment(double predictedCost, String category) {
+    public double calculateMonthlyPayment(double predictedCost, String category) {
         switch (category) {
             case "Basic Coverage":
                 return predictedCost * 0.8; // 20% reduction
