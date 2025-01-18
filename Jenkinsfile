@@ -29,7 +29,7 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 script {
-                    sh 'mvn test'
+                    sh 'mvn test -X'
                 }
             }
         }
