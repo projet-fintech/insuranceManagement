@@ -37,21 +37,22 @@ pipeline {
                 }
             }
         }*/
-         stage('SonarQube Analysis') {
-     steps {
-         script {
-            withSonarQubeEnv('sonarqube') {
-          sh """
-          mvn sonar:sonar -X \
-               -Dsonar.projectKey=${COMPONENT_NAME}-project \
-               -Dsonar.sources=. \
-               -Dsonar.host.url=${SONAR_HOST}
-              -Dsonar.login=${SONAR_TOKEN}
-            """
-             }
-         }
-     }
- }
+        stage('SonarQube Analysis') {
+                    steps {
+                        script {
+                            withSonarQubeEnv('sonarqube') {
+                                sh """
+                                mvn sonar:sonar -X \
+                                    -Dsonar.projectKey=${COMPONENT_NAME}-project \
+                                    -Dsonar.sources=src/main/java \
+                                    -Dsonar.tests=src/test/java \
+                                    -Dsonar.host.url=${SONAR_HOST} \
+                                    -Dsonar.login=${SONAR_TOKEN}
+                                """
+                            }
+                        }
+                    }
+                }
           /*stage('Build Docker Image') {
                      steps {
                          script {
