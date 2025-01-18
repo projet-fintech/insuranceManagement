@@ -12,6 +12,7 @@ import com.project.inssurancemanagement.services.CarInsuranceRequestService;
 
 @RestController
 @RequestMapping("/api/car-insurance")
+@CrossOrigin(origins = "*")
 public class CarInsuranceController {
 
     @Autowired

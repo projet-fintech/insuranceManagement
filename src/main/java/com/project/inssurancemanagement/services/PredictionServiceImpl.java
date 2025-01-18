@@ -5,6 +5,7 @@ import com.project.inssurancemanagement.entities.InsurancePrediction;
 import com.project.inssurancemanagement.repositories.HealthInsuranceRequestRepository;
 import com.project.inssurancemanagement.repositories.InsurancePredictionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,9 +15,8 @@ import java.util.Optional;
 
 @Service
 public class PredictionServiceImpl implements PredictionService {
-
-    private static final String PREDICTION_API_URL = "http://127.0.0.1:5000/predict";
-
+    @Value("${health.prediction.api.url}")
+    private String healthPredictionUrl;
     @Autowired
     private HealthInsuranceRequestRepository healthInsuranceRequestRepository;
 
@@ -46,7 +46,7 @@ public class PredictionServiceImpl implements PredictionService {
         System.out.println("Request data for Flask API: " + requestData);
 
         // Send the POST request
-        Map<String, Object> response = restTemplate.postForObject(PREDICTION_API_URL, requestData, Map.class);
+        Map<String, Object> response = restTemplate.postForObject(healthPredictionUrl, requestData, Map.class);
 
         if (response == null || !response.containsKey("prediction")) {
             throw new RuntimeException("Failed to get prediction from Flask API");

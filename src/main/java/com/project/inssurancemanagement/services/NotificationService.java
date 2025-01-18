@@ -2,6 +2,7 @@ package com.project.inssurancemanagement.services;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -11,8 +12,8 @@ import java.util.Map;
 @Service
 public class NotificationService {
 
-    private static final String NOTIFICATION_SERVICE_URL = "http://localhost:8081/notifications/send";
-
+    @Value("${notification.api.url}")
+    private String notificationServiceUrl;
     @Autowired
     private RestTemplate restTemplate;
 
@@ -24,6 +25,6 @@ public class NotificationService {
         requestData.put("category", category);
         requestData.put("monthlyPayment", monthlyPayment);
 
-        restTemplate.postForObject(NOTIFICATION_SERVICE_URL, requestData, String.class);
+        restTemplate.postForObject(notificationServiceUrl, requestData, String.class);
     }
 }

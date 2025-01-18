@@ -5,6 +5,7 @@ import com.project.inssurancemanagement.entities.CarInsuranceRequest;
 import com.project.inssurancemanagement.repositories.CarInsurancePredictionRepository;
 import com.project.inssurancemanagement.repositories.CarInsuranceRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,8 +16,8 @@ import java.util.Optional;
 @Service
 public class PredictionServiceForCarInsurance {
 
-    private static final String PREDICTION_API_URL = "http://127.0.0.1:5000/predict";
-
+    @Value("${car.prediction.api.url}")
+    private String PredictionApiUrl;
     @Autowired
     private CarInsuranceRequestRepository requestRepository;
 
@@ -42,7 +43,7 @@ public class PredictionServiceForCarInsurance {
         System.out.println("Request data for Flask API: " + requestData);
 
         // Send the POST request
-        Map<String, Object> response = restTemplate.postForObject(PREDICTION_API_URL, requestData, Map.class);
+        Map<String, Object> response = restTemplate.postForObject(PredictionApiUrl, requestData, Map.class);
 
         if (response == null || !response.containsKey("ensemble_prediction")) {
             throw new RuntimeException("Failed to get prediction from Flask API");
