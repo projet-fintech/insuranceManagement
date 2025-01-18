@@ -23,13 +23,13 @@ pipeline {
                         )
                     }
                 }
-        /*stage('Build') {
+        stage('Build') {
             steps {
               script {
                    sh "mvn clean install -DskipTests"
               }
             }
-        }*/
+        }
           /*stage('Run Unit Tests') {
            steps {
                 script {
@@ -37,6 +37,7 @@ pipeline {
                 }
             }
         }*/
+
         stage('SonarQube Analysis') {
                     steps {
                         script {
