@@ -11,7 +11,7 @@ pipeline {
         IMAGE_NAME = 'insurance-management'
         COMPONENT_NAME = 'Insurance-Management'
         SONAR_TOKEN = '39cc334a0a13dc54d616ab48a6949fae534f6b15'
-        SONAR_HOST = 'http://192.168.0.147:9000'
+        SONAR_HOST = 'http://192.168.0.66:9000'
     }
     stages {
         // Étape 1 : Checkout du code
